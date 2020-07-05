@@ -1,0 +1,27 @@
+<html th:replace="~{layout :: layout(~{::title}, ~{::div})}" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Projects</title>
+    <link rel="stylesheet" href="../../style.css">
+</head>
+<body class="body">
+
+<div th:remove="all-but-first">
+    <div th:each="project : ${projects}">
+        <div class="project-name">
+            <a href="xx" th:href="${project.appUrl}" th:text="${project.appName}">Name</a>
+        </div>
+        <div class="git-url">
+            <a href="xx" th:href="${project.gitUrl}" th:text="${project.gitUrl}">git URL</a>
+        </div>
+    </div>
+    <div>
+        <div>
+            <a href="xx">Name</a>
+        </div>
+        <div>
+            <a href="xx">git URL</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
