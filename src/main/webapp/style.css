@@ -218,7 +218,7 @@ ul {
   .form {
       width: 100%;
   }
-  button, input[type=submit], input[type=text], input[type=password], textarea, .input, select, label, body, .form-input-message {
+  button, input[type=submit], input[type=text], input[type=password], textarea, .input, select, label, .body, .form-input-message {
     font-size: 46pt;
   }
   .form-input-message {
@@ -233,6 +233,9 @@ ul {
   button[type=submit] {
     margin-top: 48pt;
     margin-bottom: 20pt;
+  }
+  .git-url {
+    font-size: 26pt;
   }
 }
 
