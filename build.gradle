@@ -1,9 +1,9 @@
 
 
 plugins {
-    id 'war'
+    id 'java'
+    id 'application'
     id 'net.researchgate.release' version '2.8.1'
-    id "org.gretty" version "3.0.3"
     id "maven-publish"
     id "org.hidetake.ssh" version "2.10.1"
 }
@@ -11,7 +11,9 @@ plugins {
 group 'com.github.simkuenzi'
 version version
 
-sourceCompatibility = 1.8
+application {
+    mainClass = 'com.github.simkuenzi.projectlist.Server'
+}
 
 repositories {
     mavenCentral()
@@ -19,15 +21,21 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'org.glassfish.jersey.core', name: 'jersey-server', version: '2.7'
-    implementation group: 'org.glassfish.jersey.containers', name: 'jersey-container-servlet-core', version: '2.7'
     implementation group: 'org.thymeleaf', name: 'thymeleaf', version: '3.0.11.RELEASE'
-    implementation group: 'com.github.simkuenzi', name: 'restforms', version: '1.0'
+    implementation group: 'io.javalin', name: 'javalin', version: '3.9.1'
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: '1.7.30'
     testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
-gretty {
-    contextConfigFile = 'projectlist.xml'
+jar {
+    manifest {
+        attributes 'Implementation-Title': "${project.name} server",
+                'Implementation-Version': this.version,
+                'Main-Class': 'com.github.simkuenzi.projectlist.Server'
+    }
+    archiveClassifier.set("all")
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 publishing {
@@ -43,7 +51,7 @@ publishing {
     }
     publications {
         gpr(MavenPublication) {
-            from(components.web)
+            from(components.java)
         }
     }
 }
@@ -69,11 +77,11 @@ task createProperties(dependsOn: processResources) {
     }
 }
 
-task deploy(dependsOn: war) {
+task deploy(dependsOn: jar) {
     doLast {
         ssh.run {
             session(remotes.webServer) {
-                put from: war.archivePath, into: System.properties['deployPath']
+                put from: jar.archiveFile.get().asFile, into: System.properties['deployPath']
             }
         }
     }
